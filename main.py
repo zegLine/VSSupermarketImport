@@ -24,19 +24,26 @@ class File():
         return False
 
     def isMultiple(self):
-        if (self.filename_noext).endswith(')'):
+        regx = re.findall('\((\d)\)', self.filename_noext)
+        if bool(regx):
             return True
         return False
 
     def sku(self):
-        regx = re.findall('(?<=\s)(\d+)(?=\s)', self.filename_noext)
+        regx = re.findall('(?<=\s)(\d+)(?=\s|.)', self.filename_noext)
         if not bool(regx):
             return 0
         return regx[-1]
+
+    def imageCount(self):
+        if not self.isMultiple():
+            return 1
+        return re.findall('\((\d)\)', self.filename_noext)[-1]
 
     def seoFriendlyName(self):
         return str(self.filename_noext).partition(self.sku())[0]
 
 
-a = File('aa-bb-cc dd 545656456 (1) .jpg')
+a = File('aa-bb-cc dd 545656456 (1).jpg')
+print(a.sku())
 print(a.seoFriendlyName())
